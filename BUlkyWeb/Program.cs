@@ -1,7 +1,21 @@
+using BUlkyWeb.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+//if we need to register somthing for our application itd is done in program.cs
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//sqlserver configuration
+//builder.Services.AddDbContext<ApplicationDbContext>(options => 
+//options.UseSqlServer( builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//sqlite configuration
+builder.Services.AddDbContext<ApplicationDbContext>(options => 
+options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 var app = builder.Build();
 
