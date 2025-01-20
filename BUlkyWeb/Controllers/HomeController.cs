@@ -12,7 +12,7 @@ namespace BUlkyWeb.Controllers
         {
             _logger = logger;
         }
-
+        //IActionResult , custom class or object includes all possible retun types in .net
         public IActionResult Index()
         {
             return View();
