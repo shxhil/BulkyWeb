@@ -1,7 +1,9 @@
 ﻿@model List<Category>
+@* model its type *@
 
 
-    <div class="container">
+
+<div class="container">
     <div class="row pt-4  pb-3">
         <div class="col-6">
             <h2 class="text-primary">
@@ -20,6 +22,7 @@
         <tr>
             <th>Category Name</th>
             <th>Display Order</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -28,6 +31,17 @@
             <tr>
                 <td> @obj.Name</td>
                 <td>@obj.DisplayOrder</td>
+                <td>
+                    <div role="group" class="btn-group w-75">
+                            <a asp-controller="Category" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-primary mx-2">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
+
+                            <a asp-controller="Category" asp-action="Delete" asp-route-id="@obj.Id" class="btn btn-danger mx-2">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                    </div>
+                </td>
             </tr>
         }
        

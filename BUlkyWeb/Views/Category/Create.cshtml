@@ -1,24 +1,41 @@
 ﻿@model Category
 
 <form method="post">
-<div class="container">
-    <div class="row pb-2">
-        <h2 class="text-primary"> Create Category</h2>
-        <hr/>
+    <div class="container">
+        <div class="row pb-2">
+            <h2 class="text-primary"> Create Category</h2>
+            <hr />
 
-    </div>
-    <div class="mb-3">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" type="text" class="form-control" />
-    </div>
+        </div>
+        <div asp-validation-summary="ModelOnly"></div>
+        <div class="mb-3">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" type="text" class="form-control" /> @* db *@
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="DisplayOrder"></label>
-        <input asp-for="DisplayOrder"   class="form-control" />
-    </div>
-    <button type="submit" class="btn btn-primary" style="width:150px">Create</button>
-    <a asp-controller="Category" asp-action="index" class="btn btn-secondary" style="width:150px">
-        Back to  list
-    </a>
-</div>
+        <div class="mb-3">
+            @* <label>Display Order</label>*@
+            <label asp-for="DisplayOrder"></label>
+            <input asp-for="DisplayOrder" class="form-control" />
+            <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+
+        </div>
+        <div class="row">
+            <div class="col-6 col-md-3">
+                <button type="submit" class="btn btn-primary col-sm-6 col-md-4" style="width:150px">Create</button>
+            </div>
+            <div class="col-6 col-md-3">
+                <a asp-controller="Category" asp-action="index" class="btn btn-secondary col-sm-6 col-md-4" style="width:150px">
+                    Back to  list
+                </a>
+            </div>
+        </div>
 </form>
+
+@*   Client Side Validation *@
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

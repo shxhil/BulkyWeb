@@ -8,11 +8,12 @@ namespace BUlkyWeb.Models
         [Key]
         public int Id { get; set; }
         [Required] //not null
-        [DisplayName("Category Name")]
         [MaxLength(30)]
+        [DisplayName("Category Name")]
         public string Name { get; set; }
         [DisplayName("Display Order")]
-        [MaxLength(1,100)]
-        public int DisplayOrder { get; set; }
+        [Range(1,100,ErrorMessage ="Display Order Must be between 1-100")]
+        [Required(ErrorMessage = "Value cannot be empty")]
+        public int? DisplayOrder { get; set; }
     }
 }
