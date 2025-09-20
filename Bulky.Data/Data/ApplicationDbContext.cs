@@ -1,10 +1,11 @@
-﻿using BUlkyWeb.Models;
+﻿using Bulky.Models;
+using BUlky.DataAccess;
 using Microsoft.EntityFrameworkCore;
 
-namespace BUlkyWeb.Data
+namespace BUlky.DataAccess
 {
-    public class ApplicationDbContext :DbContext  //ctrl+. shorcut to fix error format
-    {                                                                       //base=> we want to pass that to the dbcontext(baseclass) ,so in c# base()
+    public class ApplicationDbContext :DbContext  
+    {                                                                       
         public ApplicationDbContext(DbContextOptions <ApplicationDbContext>options):base(options) 
         {
             
