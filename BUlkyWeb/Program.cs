@@ -2,6 +2,7 @@ using Bulky.DataAccess.Repository.IRepostory;
 using BUlky.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Bulky.DataAccess.Repository;
+using Bulky.DataAccess.Repositoryf;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,7 @@ op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")))
 //options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
 
@@ -38,6 +40,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+   // pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

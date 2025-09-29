@@ -1,4 +1,5 @@
-﻿using Bulky.DataAccess.Repository.IRepostory;
+﻿using Bulky.DataAccess.Repository;
+using Bulky.DataAccess.Repository.IRepostory;
 using Bulky.Models;
 using BUlky.DataAccess;
 using System;
@@ -7,9 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bulky.DataAccess.Repository
+namespace Bulky.DataAccess.Repositoryf
 {
-    internal class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : IUnitOfWork
     {
         public ICategoryRepository Category { get; private set; }
 
