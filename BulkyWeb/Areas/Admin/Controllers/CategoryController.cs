@@ -3,13 +3,13 @@ using Bulky.Models;
 using BUlky.DataAccess;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BUlkyWeb.Controllers
+namespace BulkyWeb.Areas.Admin.Controllers
 {
+    [Area("Admin")]
+
     public class CategoryController : Controller
     {
         //private readonly ICategoryRepository _categoryRepository;//local variable
-
-
         private readonly IUnitOfWork _unitOfWork;
         public CategoryController(IUnitOfWork unitOfWork)
         {
