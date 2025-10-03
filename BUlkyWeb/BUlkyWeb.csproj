@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <Compile Include="Areas\Admin\Controllers\CategoryController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ProductController.cs" />
     <Compile Include="Areas\Customer\Controllers\HomeController.cs" />
   </ItemGroup>
 
