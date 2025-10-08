@@ -1,9 +1,11 @@
 ﻿using Bulky.DataAccess.Repository.IRepostory;
 using Bulky.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BulkyWeb.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -14,11 +16,20 @@ namespace BulkyWeb.Areas.Admin.Controllers
         public IActionResult Index()
         {
             List<Product> productObj = _unitOfWork.Product.GetAll().ToList();
+
             return View(productObj);
         }
 
         public IActionResult Create()
         {
+            //Projection in EF => to convert from db to directly into EF
+            IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll()
+                .Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                });
+            ViewBag.CategoryList = CategoryList;
             return View();
         }
         [HttpPost]
@@ -30,6 +41,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
                 _unitOfWork.Product.Add(obj);
                 _unitOfWork.Save();
                 TempData["Success"] = "Product Saved Successfully";
+                return RedirectToAction("Index", "Product");
             }
             return View();
         }
@@ -45,7 +57,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
             {
                 return NotFound(prodObj);
             }
-            return View();
+            return View(prodObj);
         }
 
         [HttpPost]
@@ -57,6 +69,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
                 _unitOfWork.Save();
                 TempData["Success"] = "Product Updated Successfully";
 
+                return RedirectToAction("Index", "Product");
 
             }
             return View();
@@ -68,8 +81,8 @@ namespace BulkyWeb.Areas.Admin.Controllers
             return View(productobj);
         }
 
-        [HttpPost]
-        public IActionResult Delete(int? id)
+        [HttpPost,ActionName("Delete")]
+        public IActionResult DeletePost(int? id)
         {
             Product productobj = _unitOfWork.Product.Get(x => x.Id == id);
             if (id == null)
@@ -82,6 +95,8 @@ namespace BulkyWeb.Areas.Admin.Controllers
                 _unitOfWork.Product.Remove(productobj);
                 _unitOfWork.Save();
                 TempData["Success"] = "Product Deleted Succesfully";
+                return RedirectToAction("Index", "Product");
+
 
             }
             return View();

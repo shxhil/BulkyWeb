@@ -20,8 +20,8 @@ namespace BUlky.DataAccess
             modelBuilder.Entity<Category>().HasData(
                 new Category { Id = 1, Name = "Action", DisplayOrder = 1 },
                 new Category { Id = 2, Name = "Sci-fi", DisplayOrder = 2 },
-                new Category { Id = 3, Name = "History", DisplayOrder = 3 },
-                new Category { Id = 4, Name = "hi", DisplayOrder = 3 }
+                new Category { Id = 3, Name = "History", DisplayOrder = 3 }
+                //new Category { Id = 4, Name = "hi", DisplayOrder = 3 }
 
 
                 );
@@ -37,7 +37,9 @@ namespace BUlky.DataAccess
                     ListPrice = 99,
                     Price = 90,
                     Price50 = 85,
-                    Price100 = 80
+                    Price100 = 80,
+                    CategoryId=5,
+                    ImageUrl=""
                 },
                 new Product
                 {
@@ -49,7 +51,9 @@ namespace BUlky.DataAccess
                     ListPrice = 40,
                     Price = 30,
                     Price50 = 25,
-                    Price100 = 20
+                    Price100 = 20,
+                    CategoryId = 5,
+                    ImageUrl = ""
                 },
                 new Product
                 {
@@ -61,7 +65,9 @@ namespace BUlky.DataAccess
                     ListPrice = 55,
                     Price = 50,
                     Price50 = 40,
-                    Price100 = 35
+                    Price100 = 35,
+                    CategoryId = 5,
+                    ImageUrl = ""
                 },
                 new Product
                 {
@@ -73,7 +79,9 @@ namespace BUlky.DataAccess
                     ListPrice = 70,
                     Price = 65,
                     Price50 = 60,
-                    Price100 = 55
+                    Price100 = 55,
+                    CategoryId = 2,
+                    ImageUrl = ""
                 },
                 new Product
                 {
@@ -85,7 +93,9 @@ namespace BUlky.DataAccess
                     ListPrice = 30,
                     Price = 27,
                     Price50 = 25,
-                    Price100 = 20
+                    Price100 = 20,
+                    CategoryId = 2,
+                    ImageUrl = ""
                 },
                 new Product
                 {
@@ -97,7 +107,9 @@ namespace BUlky.DataAccess
                     ListPrice = 25,
                     Price = 23,
                     Price50 = 22,
-                    Price100 = 20
+                    Price100 = 20,
+                    CategoryId = 3,
+                    ImageUrl = ""
                 }
                 );
         }

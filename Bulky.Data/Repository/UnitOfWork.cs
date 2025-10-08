@@ -20,6 +20,7 @@ namespace Bulky.DataAccess.Repositoryf
         {
             _db = db;
             Category = new CategoryRepository(db);
+            Product = new ProductRepository(db);
            
         }
 
