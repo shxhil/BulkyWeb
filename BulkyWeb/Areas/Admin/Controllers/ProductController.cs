@@ -1,5 +1,6 @@
 ﻿using Bulky.DataAccess.Repository.IRepostory;
 using Bulky.Models;
+using Bulky.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -30,15 +31,22 @@ namespace BulkyWeb.Areas.Admin.Controllers
                     Value = u.Id.ToString()
                 });
             ViewBag.CategoryList = CategoryList;
-            return View();
+            ProductVM productVM = new ProductVM()
+            {
+                CategoryList = CategoryList,
+                Product = new Product()
+            };
+
+
+            return View(productVM);
         }
         [HttpPost]
-        public IActionResult Create(Product obj)
+        public IActionResult Create(ProductVM obj)
         {
 
             if (ModelState.IsValid)
             {
-                _unitOfWork.Product.Add(obj);
+                _unitOfWork.Product.Add(obj.Product);
                 _unitOfWork.Save();
                 TempData["Success"] = "Product Saved Successfully";
                 return RedirectToAction("Index", "Product");
@@ -48,7 +56,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
 
         public IActionResult Edit(int? id)
         {
-            if(id==null || id == 0)
+            if (id == null || id == 0)
             {
                 return NotFound();
             }
@@ -81,7 +89,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
             return View(productobj);
         }
 
-        [HttpPost,ActionName("Delete")]
+        [HttpPost, ActionName("Delete")]
         public IActionResult DeletePost(int? id)
         {
             Product productobj = _unitOfWork.Product.Get(x => x.Id == id);

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bulky.DataAccess.Repositoryf
+namespace Bulky.DataAccess.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
