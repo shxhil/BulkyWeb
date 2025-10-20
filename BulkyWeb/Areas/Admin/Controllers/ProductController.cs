@@ -126,7 +126,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
                     string fileName = Guid.NewGuid().ToString() + Path.GetFileName(file.FileName);
                     string productPath = Path.Combine(wwwRootPath, @"images\product");
 
-                    //to save that image
+                    //to save that image in folderf
                     using( var fileStream = new FileStream(Path.Combine(productPath,fileName), FileMode.Create))
                     {
                         file.CopyTo(fileStream);
