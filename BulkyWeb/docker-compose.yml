@@ -1,9 +1,0 @@
-version: '3.4'
-services:
-  db:
-    image: "mcr.microsoft.com/mssql/server:2022-latest"
-    environment:
-      SA_PASSWORD: "shahil@123"
-      ACCEPT_EULA: "Y"
-    ports:
-      - "1433:1433"
