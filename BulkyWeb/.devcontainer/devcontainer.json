@@ -1,0 +1,17 @@
+{
+    "name": "BulkyWeb Codespace",
+    "dockerComposeFile": [
+        "../docker-compose.yml"
+    ],
+    "service": "app",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-dotnettools.csdevkit"
+            ]
+        }
+    },
+    "forwardPorts": [5091, 5283, 1433],
+    "postCreateCommand": "dotnet restore"
+}
