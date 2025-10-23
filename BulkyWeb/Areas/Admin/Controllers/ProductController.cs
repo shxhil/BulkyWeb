@@ -126,6 +126,16 @@ namespace BulkyWeb.Areas.Admin.Controllers
                     string fileName = Guid.NewGuid().ToString() + Path.GetFileName(file.FileName);
                     string productPath = Path.Combine(wwwRootPath, @"images\product");
 
+                    if (!string.IsNullOrEmpty(productvm.Product.ImageUrl))
+                    {
+                        string oldImageUrl = Path.Combine(wwwRootPath, productvm.Product.ImageUrl.TrimStart('\\'));
+
+                        if (System.IO.File.Exists(oldImageUrl))
+                        {
+                            System.IO.File.Delete(oldImageUrl);
+                        }
+                    }
+
                     //to save that image in folder
                     using( var fileStream = new FileStream(Path.Combine(productPath,fileName), FileMode.Create))
                     {
@@ -148,10 +158,10 @@ namespace BulkyWeb.Areas.Admin.Controllers
             }
             else
             {
-                productvm.CategoryList = _unitOfWork.Product.GetAll()
+                productvm.CategoryList = _unitOfWork.Category.GetAll()
                     .Select(u => new SelectListItem
                     {
-                         Text= u.Title,
+                         Text= u.Name,
                          Value=u.Id.ToString()
                     });
             }
