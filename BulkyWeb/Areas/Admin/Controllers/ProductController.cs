@@ -126,17 +126,24 @@ namespace BulkyWeb.Areas.Admin.Controllers
                     string fileName = Guid.NewGuid().ToString() + Path.GetFileName(file.FileName);
                     string productPath = Path.Combine(wwwRootPath, @"images\product");
 
-                    //to save that image in folderf
+                    //to save that image in folder
                     using( var fileStream = new FileStream(Path.Combine(productPath,fileName), FileMode.Create))
                     {
                         file.CopyTo(fileStream);
                     }
-                    productvm.Product.ImageUrl = @"images\product" + fileName;
+                    productvm.Product.ImageUrl = @"\images\product\" + fileName;
                 }
-
-                _unitOfWork.Product.Add(productvm.Product);
+                if (productvm.Product.Id == 0)
+                {
+                    _unitOfWork.Product.Add(productvm.Product);
+                    TempData["Success"] = "Product Saved Successfully";
+                }
+                else
+                {
+                    _unitOfWork.Product.Update(productvm.Product);
+                    TempData["Success"] = "Product Updated Successfully";
+                }
                 _unitOfWork.Save();
-                TempData["Success"] = "Product Saved Successfully";
                 return RedirectToAction("Index", "Product");
             }
             else
