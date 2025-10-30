@@ -15,28 +15,39 @@ namespace Bulky.DataAccess.Repository
         protected readonly ApplicationDbContext _db;
 
         internal DbSet<T> dbSet;
-        public Repository( ApplicationDbContext db)
+        public Repository(ApplicationDbContext db)
         {
             _db = db;
             //instead of 
             //dbSet=_db.Category.ToList();
             dbSet = _db.Set<T>();
+            _db.Products.Include(u => u.Category).Include(u => u.CategoryId);
+
         }
         public void Add(T entity)
         {
-           this.dbSet.Add(entity);
+            this.dbSet.Add(entity);
         }
 
         public T Get(Expression<Func<T, bool>> filter)
         {
             IQueryable<T> query = dbSet;
             query = query.Where(filter);
-            return query.FirstOrDefault(); 
+            return query.FirstOrDefault();
         }
 
-        public IEnumerable<T> GetAll()
+        //Category,CoverType
+        public IEnumerable<T> GetAll(string? includeProperty = null)
         {
             IQueryable<T> query = dbSet;
+            if (!string.IsNullOrEmpty(includeProperty))
+            {
+                foreach (var incude in includeProperty
+                    .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+
+                }
+            }
             return query.ToList();
         }
 
