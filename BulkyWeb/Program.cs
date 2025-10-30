@@ -9,13 +9,26 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-//sqlserver configuration
-builder.Services.AddDbContext<ApplicationDbContext>(op =>
-op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-////sqlite configuration
-//builder.Services.AddDbContext<ApplicationDbContext>(options => 
-//options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+var machineName = Environment.MachineName;
+Console.WriteLine($"Running on machine: {machineName}");
+
+if (machineName == "DESKTOP-M04RAKA")
+{
+
+    //sqlite configuration
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+}
+else
+{
+    //sqlserver configuration
+    builder.Services.AddDbContext<ApplicationDbContext>(op =>
+    op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+}
+
+builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

@@ -38,7 +38,7 @@ namespace BUlky.DataAccess
                     Price = 90,
                     Price50 = 85,
                     Price100 = 80,
-                    CategoryId=5,
+                    CategoryId=1,
                     ImageUrl=""
                 },
                 new Product
@@ -52,7 +52,7 @@ namespace BUlky.DataAccess
                     Price = 30,
                     Price50 = 25,
                     Price100 = 20,
-                    CategoryId = 5,
+                    CategoryId = 1,
                     ImageUrl = ""
                 },
                 new Product
@@ -66,7 +66,7 @@ namespace BUlky.DataAccess
                     Price = 50,
                     Price50 = 40,
                     Price100 = 35,
-                    CategoryId = 5,
+                    CategoryId = 1,
                     ImageUrl = ""
                 },
                 new Product
