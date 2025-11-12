@@ -29,7 +29,7 @@
                     <div class="mb-3  py-2">
                         @* <label>Display Order</label>*@
                         <label asp-for="Product.Description" class="ms-2 text-muted"></label>
-                        <textarea asp-for="Product.Description" class="form-control border-0 shadow"></textarea>
+                        <textarea asp-for="Product.Description" class="form-control border-0 shadow p-3" rows="5" placeholder="Enter Your Product Description"></textarea>
 
                     </div>
                     <div class="mb-3 form-floating py-2">
@@ -120,7 +120,7 @@
 </div>
 
 @*   Client Side Validation *@
-@section Scripts {
+@* @section Scripts {
     <script>
         tinymce.init({
           selector: 'textarea',
@@ -143,8 +143,7 @@
           ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
           uploadcare_public_key: '5bfdac0c31e0e0e3c424',
         });
-    </script>
+    </script> *@
     @{
         <partial name="_ValidationScriptsPartial" />
     }
-}

@@ -18,11 +18,12 @@ namespace BulkyWeb.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            List<Product> productObj = _unitOfWork.Product.GetAll().ToList();
+            List<Product> productObj = _unitOfWork.Product.GetAll(includeProperty: "Category").ToList();
 
             return View(productObj);
         }
 
+        #region Create & Edit
         //public IActionResult Create() 
         //{
         //    //Projection in EF => to convert from db to directly into EF
@@ -84,6 +85,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
         //    }
         //    return View();
         //}
+        #endregion
 
         public IActionResult Upsert(int? id) //Update + Insert
         {
@@ -195,5 +197,15 @@ namespace BulkyWeb.Areas.Admin.Controllers
             return View();
 
         }
+
+        #region API Calls
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            List<Product> productObj = _unitOfWork.Product.GetAll(includeProperty: "Category").ToList();
+            return Json(new {data=productObj});
+        }
+
+        #endregion
     }
 }

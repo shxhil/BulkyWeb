@@ -15,9 +15,9 @@
             <i class="fa-solid fa-plus"></i> create New Product
             </a>
         </div>
-    </div>    
-  
-<table class="table table-bordered table-striped">
+    </div>
+
+    <table id="tblData" class="table table-bordered table-striped">
     <thead>
         <tr>
             <th>Title</th>
@@ -28,15 +28,16 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
-        @foreach(var obj in Model)
+        @*  <tbody>
+        commented because  that has been done in product.js
+ @foreach(var obj in Model)
         {
             <tr>
                 <td> @obj.Title</td>
                 <td>@obj.ISBN</td>
                 <td>@obj.ListPrice</td>
                 <td>@obj.Author</td>
-                <td> </td>
+                <td>@obj.Category.Name </td>
                 <td>
                     <div role="group" class="btn-group w-75">
                             <a asp-controller="Product" asp-action="Upsert" asp-route-id="@obj.Id" class="btn btn-primary mx-2">
@@ -49,10 +50,14 @@
                     </div>
                 </td>
             </tr>
-        }
+        } 
        
-    </tbody>
+    </tbody>*@
     
 
 </table>
 </div>
+
+@section Scripts{
+    <script src="~/js/product.js"></script>
+}
