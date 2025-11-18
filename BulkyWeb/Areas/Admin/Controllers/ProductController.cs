@@ -102,7 +102,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
                 CategoryList = CategoryList,
                 Product = new Product()
             };
-            if(id == null || id == 0)
+            if (id == null || id == 0)
             {
                 //Create
                 return View(productVM);
@@ -114,7 +114,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
                 return View(productVM);
             }
 
-                
+
         }
         [HttpPost]
         public IActionResult Upsert(ProductVM productvm, IFormFile? file)
@@ -139,12 +139,18 @@ namespace BulkyWeb.Areas.Admin.Controllers
                     }
 
                     //to save that image in folder
-                    using( var fileStream = new FileStream(Path.Combine(productPath,fileName), FileMode.Create))
+                    using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
                     {
                         file.CopyTo(fileStream);
                     }
                     productvm.Product.ImageUrl = @"\images\product\" + fileName;
                 }
+                else
+                {
+                    ModelState.AddModelError("Product.ImageUrl", "A picture must be uploaded");
+                    return View(productvm);
+                }
+
                 if (productvm.Product.Id == 0)
                 {
                     _unitOfWork.Product.Add(productvm.Product);
@@ -155,18 +161,17 @@ namespace BulkyWeb.Areas.Admin.Controllers
                     _unitOfWork.Product.Update(productvm.Product);
                     TempData["Success"] = "Product Updated Successfully";
                 }
+
                 _unitOfWork.Save();
                 return RedirectToAction("Index", "Product");
             }
-            else
-            {
-                productvm.CategoryList = _unitOfWork.Category.GetAll()
-                    .Select(u => new SelectListItem
-                    {
-                         Text= u.Name,
-                         Value=u.Id.ToString()
-                    });
-            }
+            productvm.CategoryList = _unitOfWork.Category.GetAll()
+                   .Select(u => new SelectListItem
+                   {
+                       Text = u.Name,
+                       Value = u.Id.ToString()
+                   });
+
             return View(productvm);
         }
 
@@ -203,20 +208,20 @@ namespace BulkyWeb.Areas.Admin.Controllers
         public IActionResult GetAll()
         {
             List<Product> productObj = _unitOfWork.Product.GetAll(includeProperty: "Category").ToList();
-            return Json(new {data=productObj});
+            return Json(new { data = productObj });
         }
 
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-          var ProductToBeDeleted=_unitOfWork.Product.Get(x=>x.Id == id);
+            var ProductToBeDeleted = _unitOfWork.Product.Get(x => x.Id == id);
 
-            if(ProductToBeDeleted == null)
+            if (ProductToBeDeleted == null)
             {
-                return Json(new { success = false,message="Error While Deleted" });
+                return Json(new { success = false, message = "Error While Deleted" });
             }
 
-            var oldImagePath= Path.Combine(_webHostEnvironment.WebRootPath, ProductToBeDeleted.ImageUrl.TrimStart('\\'));
+            var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, ProductToBeDeleted.ImageUrl.TrimStart('\\'));
 
             if (System.IO.File.Exists(oldImagePath))
             {

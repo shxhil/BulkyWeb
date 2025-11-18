@@ -5,7 +5,7 @@ $(document).ready(function () {
 });
 
 function loadTableData() {
-    dataTable= ('#tblData', {
+    dataTable = $('#tblData').DataTable({
         "ajax": {
             "url": '/Admin/Product/GetAll',
             "dataSrc": 'data' // This matches the { data = productObj } from your controller
@@ -39,7 +39,6 @@ function loadTableData() {
 } 
 
 function Delete(url) {
-    debugger;
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -50,7 +49,7 @@ function Delete(url) {
         confirmButtonText: "Yes, delete it!"
     }).then((result) => {
         if (result.isConfirmed) {
-            $.ajax: ({
+            $.ajax({
                 url: url,
                 type: 'DELETE',
                 success: function (data) {
