@@ -1,4 +1,6 @@
 ﻿//const { ajax, type } = require("jquery");
+console.log("product.js loaded!!!");
+
 var dataTable;
 $(document).ready(function () {
     loadTableData();
@@ -15,7 +17,13 @@ function loadTableData() {
             { data: 'isbn', width: "15%" },
             { data: 'listPrice', "render": data => `$${data.toFixed(2)}`, width: "10%" }, // Formats price
             { data: 'author', width: "15%" },
-            { data: 'category.name', width: "15%" },
+            {
+                data: "category",
+                render: function (category) {
+                    return category?.name ?? "";
+                },
+                width: "15%"
+            },
             {
                 // This is the 6th column for the buttons
                 data: 'id', // Use the 'id' of the product for the links
