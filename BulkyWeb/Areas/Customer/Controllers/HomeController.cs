@@ -33,5 +33,19 @@ namespace BulkyWeb.Areas.Customer.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        // Only tocheck the Working of images in Sqlite
+        public IActionResult TestImageUrl()
+        {
+            var products = _unitOfWork.Product.GetAll();
+
+            foreach (var p in products)
+            {
+                Console.WriteLine($"ID:{p.Id}, ImageUrl:{p.ImageUrl}");
+            }
+            return Content("Check Output window(Debug) for ImageUrl Values");
+
+        }
     }
 }
+

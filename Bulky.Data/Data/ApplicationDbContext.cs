@@ -39,7 +39,7 @@ namespace Bulky.DataAccess
                     Price50 = 85,
                     Price100 = 80,
                     CategoryId=1,
-                    ImageUrl=""
+                    ImageUrl= "images/product/fortune-of-time.jpg"
                 },
                 new Product
                 {
@@ -53,7 +53,7 @@ namespace Bulky.DataAccess
                     Price50 = 25,
                     Price100 = 20,
                     CategoryId = 1,
-                    ImageUrl = ""
+                    ImageUrl = "images/product/dark-skies.jpg"
                 },
                 new Product
                 {
@@ -67,7 +67,7 @@ namespace Bulky.DataAccess
                     Price50 = 40,
                     Price100 = 35,
                     CategoryId = 1,
-                    ImageUrl = ""
+                    ImageUrl = "images/product/vanish-in-the-sunset.jpg"
                 },
                 new Product
                 {
@@ -81,7 +81,7 @@ namespace Bulky.DataAccess
                     Price50 = 60,
                     Price100 = 55,
                     CategoryId = 2,
-                    ImageUrl = ""
+                    ImageUrl = "images/product/cotton-candy.jpg"
                 },
                 new Product
                 {
@@ -95,7 +95,7 @@ namespace Bulky.DataAccess
                     Price50 = 25,
                     Price100 = 20,
                     CategoryId = 2,
-                    ImageUrl = ""
+                    ImageUrl = "images/product/rock-in-the-ocean.jpg"
                 },
                 new Product
                 {
@@ -109,7 +109,7 @@ namespace Bulky.DataAccess
                     Price50 = 22,
                     Price100 = 20,
                     CategoryId = 3,
-                    ImageUrl = ""
+                    ImageUrl = "images/product/leaves-and-wonders.jpg"
                 }
                 );
         }

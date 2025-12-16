@@ -1,8 +1,44 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model IEnumerable<Product>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row pb-3">
+    @foreach (var prodct in Model)
+    {
+        <div class="col-lg-3 col-sm-6 d-flex mt-2">
+            <div class="card border-0 p-3 shadow border-top border-5 rounded w-100 d-flex flex-column">
+
+                <img src="@prodct.ImageUrl"
+                     class="w-100 h-100 object-fit-cover  bg-light"
+                     style="height:260px;" />
+
+                <div class="card-body pb-0">
+                    <p class="card-title h5 text-dark opacity-75 text-uppercase text-center">
+                        @prodct.Title
+                    </p>
+
+                    <p class="card-text text-warning text-center">
+                        By: <b class="h5">@prodct.Author</b>
+                    </p>
+
+                    <p class="text-dark text-center text-opacity-75">
+                        List Price:
+                        <span class="text-decoration-line-through">
+                            @prodct.ListPrice.ToString("c")
+                        </span>
+                    </p>
+
+                    <p class="text-dark text-center text-opacity-75">
+                        As low as:
+                        <span>@prodct.Price100.ToString("c")</span>
+                    </p>
+                </div>
+
+                <div class="mt-auto">
+                    <a href="#" class="btn btn-primary bg-gradient form-control">
+                        Details
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    }
 </div>

@@ -15,7 +15,7 @@ function loadTableData() {
         "columns": [
             { data: 'title', width: "15%" },
             { data: 'isbn', width: "15%" },
-            { data: 'listPrice', "render": data => `$${data.toFixed(2)}`, width: "10%" }, // Formats price
+            { data: 'listPrice', "render": data => `₹${data.toFixed(2)}`, width: "10%" }, // Formats price
             { data: 'author', width: "15%" },
             {
                 data: "category",
