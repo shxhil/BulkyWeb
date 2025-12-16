@@ -23,6 +23,12 @@ namespace BulkyWeb.Areas.Customer.Controllers
             return View(productList);
         }
 
+        public IActionResult Details(int ProductId)
+        {
+            Product product = _unitOfWork.Product.Get(u => u.Id == ProductId, includeProperty: "Category");
+            return View(product);
+        }
+
         public IActionResult Privacy()
         {
             return View();
@@ -32,6 +38,8 @@ namespace BulkyWeb.Areas.Customer.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+
+
         }
 
         // Only tocheck the Working of images in Sqlite
