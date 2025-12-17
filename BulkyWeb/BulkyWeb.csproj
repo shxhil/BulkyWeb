@@ -74,4 +74,8 @@
     <Folder Include="wwwroot\images\product\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="Areas\Customer\Views\Home\Details.cshtml" />
+  </ItemGroup>
+
 </Project>

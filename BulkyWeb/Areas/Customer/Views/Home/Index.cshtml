@@ -31,11 +31,11 @@
                         <span>@prodct.Price100.ToString("c")</span>
                     </p>
                 </div>
-                @* same name as in Controllers input Parameter ProductId to=>(asp-route-ProductId)*@              
-                <div class="mt-auto">
+                @* same name as in Controllers input Parameter productId to=>(asp-route-ProductId)*@              
+                    <div class="mt-auto">
                     <a asp-action="Details"
-                       asp-route-ProductId="@prodct.Id"
-                    class="btn btn-primary bg-gradient form-control">
+                       asp-route-productId="@prodct.Id"
+                       class="btn btn-primary bg-gradient form-control">
                         Details
                     </a>
                 </div>
