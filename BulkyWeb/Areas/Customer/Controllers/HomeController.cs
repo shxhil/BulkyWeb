@@ -43,6 +43,7 @@ namespace BulkyWeb.Areas.Customer.Controllers
         }
 
         // Only tocheck the Working of images in Sqlite
+        //https://localhost:xxxx/Customer/Home/TestImageUrl
         public IActionResult TestImageUrl()
         {
             var products = _unitOfWork.Product.GetAll();

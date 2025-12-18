@@ -1,10 +1,12 @@
-﻿using Bulky.Models;
-using Bulky.DataAccess;
+﻿using Bulky.DataAccess;
+using Bulky.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bulky.DataAccess
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -17,6 +19,7 @@ namespace Bulky.DataAccess
         //to create,insert into categories
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Category>().HasData(
                 new Category { Id = 1, Name = "Action", DisplayOrder = 1 },
                 new Category { Id = 2, Name = "Sci-fi", DisplayOrder = 2 },

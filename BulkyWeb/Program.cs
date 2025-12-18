@@ -1,7 +1,8 @@
-﻿using Bulky.DataAccess.Repository.IRepostory;
+using Bulky.DataAccess.Repository.IRepostory;
 using Bulky.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Bulky.DataAccess.Repository;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +28,10 @@ else
         options.UseSqlServer(builder.Configuration.GetConnectionString("MainDefaultConnection")));
 }
 
+builder.Services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
+
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
@@ -59,8 +63,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
+app.MapRazorPages();
 
 app.MapControllerRoute(
     name: "default",
