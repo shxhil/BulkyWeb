@@ -28,7 +28,7 @@ else
         options.UseSqlServer(builder.Configuration.GetConnectionString("MainDefaultConnection")));
 }
 
-builder.Services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddRazorPages();
