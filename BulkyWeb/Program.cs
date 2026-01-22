@@ -1,9 +1,11 @@
-using Bulky.DataAccess.Repository.IRepostory;
 using Bulky.DataAccess;
-using Microsoft.EntityFrameworkCore;
 using Bulky.DataAccess.Repository;
+using Bulky.DataAccess.Repository.IRepostory;
+using Bulky.Utility;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.EntityFrameworkCore;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +23,12 @@ Console.WriteLine($"Running on machine: {machineName}");
 if (useSqlite)
 {
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlOption=>
+        {
+            sqlOption.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
+        }
+        ));
 }
 else
 {
@@ -29,11 +36,10 @@ else
         options.UseSqlServer(builder.Configuration.GetConnectionString("MainDefaultConnection")));
 }
 
-builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddSingleton<IEmailSender, IEmailSender>();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
