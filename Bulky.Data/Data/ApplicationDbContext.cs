@@ -16,6 +16,8 @@ namespace Bulky.DataAccess
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<Company> Companies { get; set; }
+
 
         //to create,insert into categories
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -30,7 +32,40 @@ namespace Bulky.DataAccess
 
                 );
 
-            modelBuilder.Entity<Product>().HasData(
+            modelBuilder.Entity<Company>().HasData(
+               new Company
+               {
+                   Id = 1,
+                   Name = "Fortune of Time",
+                   StreetAddress = "Billy Spark",
+                   City = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
+                   State = "SWD9999001",
+                   PostalCode = "45699",
+                   PhoneNumber = "1223565666",
+               },
+               new Company
+               {
+                   Id = 2,
+                   Name = "Dark Skies",
+                   StreetAddress = "Billy Spark",
+                   City = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
+                   State = "SWD9999001",
+                   PostalCode = "45699",
+                   PhoneNumber = "1223565666",
+               },
+               new Company
+               {
+                   Id = 3,
+                   Name = "Vanish in the Sunset",
+                   StreetAddress = "Billy Spark",
+                   City = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
+                   State = "SWD9999001",
+                   PostalCode = "45699",
+                   PhoneNumber = "1223565666",
+               }
+               );
+
+           modelBuilder.Entity<Product>().HasData(
                 new Product
                 {
                     Id = 1,

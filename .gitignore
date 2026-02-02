@@ -9,6 +9,17 @@
 # Ignore SQLite database files
 *.db
 
+# --- Custom ignore rules for SQLite development (Plan A) ---
+
+# Ignore EF Core migrations for SQLite in Bulky.Data project
+Bulky.Data/Migrations/
+
+# Ignore SQLite database files in BulkyWeb project
+BUlkyWeb/*.db
+BUlkyWeb/*.sqlite
+BUlkyWeb/*.sqlite3
+
+
 # User-specific files
 *.rsuser
 *.suo
