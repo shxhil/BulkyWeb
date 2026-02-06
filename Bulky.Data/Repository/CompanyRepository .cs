@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Bulky.DataAccess.Repository
 {
-    public class CompanyRepositiry : Repository<Company> , ICompanyRepository
+    public class CompanyRepository : Repository<Company> , ICompanyRepository
     {
 
         // private ApplicationDbContext _db;
@@ -20,7 +20,7 @@ namespace Bulky.DataAccess.Repository
         // This constructor's only job is to pass the 'db' context to the parent.
 
         private ApplicationDbContext _db;
-        public CompanyRepositiry( ApplicationDbContext db) :base(db)
+        public CompanyRepository( ApplicationDbContext db) :base(db)
         //When a class inherits from another, the child's constructor is responsible for calling the parent's constructor.(base(db))
         //If the base class needs parameters in its constructor, the derived class must pass them using : base(...).
         {
