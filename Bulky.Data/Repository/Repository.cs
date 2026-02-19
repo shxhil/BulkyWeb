@@ -29,11 +29,19 @@ namespace Bulky.DataAccess.Repository
             this.dbSet.Add(entity);
         }
 
-        public T Get(Expression<Func<T, bool>> filter, string? includeProperties=null)
+        public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool istacking = false)
         {
-            IQueryable<T> query = dbSet;
+            IQueryable<T> query;
+            if (istacking)
+            {
+                query = dbSet;
+            }
+            else
+            {
+                query = dbSet.AsNoTracking();
+            }
             query = query.Where(filter);
-            if(string.IsNullOrEmpty(includeProperties)==false)
+            if (string.IsNullOrEmpty(includeProperties) == false)
             {
                 foreach (var includeProp in includeProperties
                     .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -55,7 +63,7 @@ namespace Bulky.DataAccess.Repository
                 foreach (var incudeProp in includeProperty
                     .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    query=query.Include(incudeProp);
+                    query = query.Include(incudeProp);
                 }
             }
             return query.ToList();

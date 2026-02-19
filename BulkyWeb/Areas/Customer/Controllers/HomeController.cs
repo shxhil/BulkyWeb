@@ -1,3 +1,4 @@
+using Bulky.DataAccess;
 using Bulky.DataAccess.Repository.IRepostory;
 using Bulky.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -25,6 +26,7 @@ namespace BulkyWeb.Areas.Customer.Controllers
             return View(productList);
         }
 
+        [Authorize]
         public IActionResult Details(int productId)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
@@ -33,7 +35,8 @@ namespace BulkyWeb.Areas.Customer.Controllers
             {
                 Product = _unitOfWork.Product.Get(u => u.Id == productId, includeProperty: "Category"),
                 ProductId = productId,
-                Count = 1,ApplicationUserId=userId
+                Count = 1,
+                ApplicationUserId=userId
             };
 
             return View(cart);
@@ -46,7 +49,18 @@ namespace BulkyWeb.Areas.Customer.Controllers
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
             shoppingCart.ApplicationUserId=userId;
 
-            _unitOfWork.ShoppingCart.Add(shoppingCart);
+            ShoppingCart cartFrmDB = _unitOfWork.ShoppingCart.Get(x => x.ApplicationUserId == userId && x.ProductId == shoppingCart.ProductId);
+
+            if(cartFrmDB != null)
+            {
+                cartFrmDB.Count += shoppingCart.Count;
+                _unitOfWork.ShoppingCart.Update(cartFrmDB);
+            }
+            else
+            {
+                _unitOfWork.ShoppingCart.Add(shoppingCart);
+            }
+
             _unitOfWork.Save();
             return RedirectToAction(nameof(Index));
         }
