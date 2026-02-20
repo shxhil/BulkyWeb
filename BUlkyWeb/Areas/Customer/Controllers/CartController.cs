@@ -25,10 +25,11 @@ namespace BulkyWeb.Areas.Customer.Controllers
 
             ShoppingCartVM = new()
             {
-                ShoppingCartList= _unitOfWork.ShoppingCart.GetAll(u=u.)
-            }
+                ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId
+                , includeProperty: "Product")
+            };
             
-            return View();
+            return View(ShoppingCartVM);
         }
     }
 }
