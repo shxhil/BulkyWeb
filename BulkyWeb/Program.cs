@@ -5,6 +5,7 @@ using Bulky.Utility;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Currency type setup(₹)
+// Force the entire app to use INR formats
+var cultureInfo = new CultureInfo("en-IN");
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
 
 //mixed combination of both sqlserver and sqlite
 
