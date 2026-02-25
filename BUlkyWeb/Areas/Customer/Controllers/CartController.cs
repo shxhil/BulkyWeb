@@ -44,6 +44,7 @@ namespace BulkyWeb.Areas.Customer.Controllers
             {
                 cart.Price = GetPriceBasedonQuantity(cart);
                 ShoppingCartVM.OrderHeader.OrderTotal += cart.Price * (cart.Count);
+                var img = cart.Product.ImageUrl;
             }
 
             return View(ShoppingCartVM);
@@ -81,6 +82,7 @@ namespace BulkyWeb.Areas.Customer.Controllers
         [HttpPost]
         [ActionName("Summary")]
         public IActionResult SummaryPOST()
+        
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -147,7 +149,7 @@ namespace BulkyWeb.Areas.Customer.Controllers
                     // 6. If regular user, create Razorpay Order
                     if (applicationUser.CompanyId.GetValueOrDefault() == 0)
                     {
-                         
+
                         var razorSettings = _configuration.GetSection("Razorpay").Get<RazorpaySettings>();
                         RazorpayClient client = new RazorpayClient(razorSettings.Key, razorSettings.Secret);
 
@@ -183,10 +185,65 @@ namespace BulkyWeb.Areas.Customer.Controllers
             }
         }
 
+        public IActionResult Payment(int id)
+        {
+            var orderHeader = _unitOfWork.OrderHeader.Get(x => x.Id == id,
+                includeProperty: "ApplicationUser");
+
+            if (orderHeader == null)
+                return RedirectToAction(nameof(Index));
+            return View(orderHeader);
+        }
+
+        [HttpPost]
+        public IActionResult PaymentVerification(
+            int orderHeaderId,
+            string razorpay_payment_id,
+            string razorpay_order_id,
+            string razorpay_signature)
+        {
+            var razorSettings = _configuration.GetSection("Razorpay").Get<RazorpaySettings>();
+
+            try
+            {
+                var attributes = new Dictionary<string, string>
+        {
+            { "razorpay_payment_id", razorpay_payment_id },
+            { "razorpay_order_id", razorpay_order_id },
+            { "razorpay_signature", razorpay_signature }
+        };
+
+                Utils.verifyPaymentSignature(attributes);
+
+                var orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == orderHeaderId);
+                orderHeader.PaymentStatus = SD.PaymentStatusApproved;
+                orderHeader.OrderStatus = SD.StatusApproved;
+                _unitOfWork.Save();
+
+                return Ok();
+            }
+            catch
+            {
+                var orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == orderHeaderId);
+                orderHeader.PaymentStatus = SD.PaymentStatusRejected;
+                orderHeader.OrderStatus = SD.StatusCancelled;
+                _unitOfWork.Save();
+
+                return BadRequest();
+            }
+        }
 
         public IActionResult OrderConfirmation(int id)
         {
-            return View();
+            var orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == id);
+
+            var carts = _unitOfWork.ShoppingCart.GetAll(
+                u => u.ApplicationUserId == orderHeader.ApplicationUserId);
+
+            _unitOfWork.ShoppingCart.RemoveRange(carts);
+            _unitOfWork.Save();
+
+            return View(id);
         }
 
         public IActionResult Plus(int cartId)

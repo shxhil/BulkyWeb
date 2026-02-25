@@ -1,0 +1,45 @@
+﻿@model OrderHeader
+@inject IConfiguration Configuration
+
+<div class="container mt-4">
+    <h3>Complete Payment</h3>
+    <p>Oder ID :@Model.Id</p>
+    <p>Total Amount :₹ @Model.OrderTotal</p>
+    <button id="rzp-button" class="btn btn-primary">
+        Pay Now
+    </button>
+</div>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    debugger
+    var options = {
+        "key": "@Configuration["Razorpay:Key"]",
+        "amount": "@((int)(Model.OrderTotal * 100))",
+        "currency": "INR",
+        "name": "Bulky Book Store",
+        "description": "Order Payment",
+        "order_id": "@Model.PaymentIntentId",
+        "handler": function (response) {
+            $.ajax({
+                url: '@Url.Action("PaymentVerification", "Order")',
+                type: 'POST',
+                data: {
+                    orderHeaderId: '@Model.Id',
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_signature: response.razorpay_signature
+                },
+                success: function () {
+                    window.location.href = '@Url.Action("OrderConfirmation", "Order", new { id = Model.Id })';
+                }
+            });
+        }
+    };
+
+    document.getElementById('rzp-button').onclick = function (e) {
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+        e.preventDefault();
+    }
+</script>
