@@ -95,7 +95,7 @@ namespace BulkyWeb.Areas.Customer.Controllers
             #region OrderHeader
             if (applicationUser.CompanyId.GetValueOrDefault() == 0)
             {
-                //regular user
+                //regular user , customer
                 ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
                 ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
 
@@ -124,8 +124,19 @@ namespace BulkyWeb.Areas.Customer.Controllers
                 _unitOfWork.OrderDetail.Add(orderDetail);
                 _unitOfWork.Save();
             }
-            #endregion
-            return View(ShoppingCartVM);
+            if (applicationUser.CompanyId.GetValueOrDefault() == 0)
+            { 
+
+            }
+           // else { }
+
+                #endregion
+                return RedirectToAction(nameof(OrderConfirmation), new { id = ShoppingCartVM.OrderHeader.Id });
+        }
+
+        public IActionResult OrderConfirmation(int id)
+        {
+            return View();
         }
 
         public IActionResult Plus(int cartId)
