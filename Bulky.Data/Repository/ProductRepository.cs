@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Bulky.DataAccess.Repository
 {
-    internal class ProductRepository : Repository<Product>, IproductRepository
+    internal class ProductRepository : Repository<Product>, IProductRepository
     {
         private readonly ApplicationDbContext _db;
         public ProductRepository(ApplicationDbContext db) : base(db)

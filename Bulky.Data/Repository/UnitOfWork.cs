@@ -1,7 +1,8 @@
-﻿using Bulky.DataAccess.Repository;
+﻿using Bulky.DataAccess;
+using Bulky.DataAccess.Repository;
 using Bulky.DataAccess.Repository.IRepostory;
 using Bulky.Models;
-using Bulky.DataAccess;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace Bulky.DataAccess.Repository
         private readonly ApplicationDbContext _db;
 
         public ICategoryRepository Category { get; private set; }
-        public IproductRepository Product { get; private set; }
+        public IProductRepository Product { get; private set; }
         public ICompanyRepository Company { get; private set; }
         public IShoppingCartRepository ShoppingCart { get; private set; } 
 
@@ -37,6 +38,14 @@ namespace Bulky.DataAccess.Repository
         public void Save()
         {
             _db.SaveChanges();
+        }
+        public IDbContextTransaction BeginTransaction()
+        {
+            return _db.Database.BeginTransaction();
+        }
+        public void Dispose()
+        {
+            _db.Dispose();
         }
     }
 }

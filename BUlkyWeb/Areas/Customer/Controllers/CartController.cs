@@ -4,6 +4,7 @@ using Bulky.Models.ViewModels;
 using Bulky.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Razorpay.Api;
 using System.Security.Claims;
 
 namespace BulkyWeb.Areas.Customer.Controllers
@@ -13,12 +14,16 @@ namespace BulkyWeb.Areas.Customer.Controllers
     public class CartController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IConfiguration _configuration;
+
+
         [BindProperty]
         public ShoppingCartVM ShoppingCartVM { get; set; }
 
-        public CartController(IUnitOfWork unitOfWork)
+        public CartController(IUnitOfWork unitOfWork, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
+            _configuration = configuration;
         }
 
 
@@ -77,62 +82,107 @@ namespace BulkyWeb.Areas.Customer.Controllers
         [ActionName("Summary")]
         public IActionResult SummaryPOST()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            ShoppingCartVM.ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperty: "Product");
+            // 1. Load cart items
+            ShoppingCartVM.ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(
+                u => u.ApplicationUserId == userId,
+                includeProperty: "Product"
+            );
 
             ShoppingCartVM.OrderHeader.OrderDate = DateTime.Now;
             ShoppingCartVM.OrderHeader.ApplicationUserId = userId;
 
-            ApplicationUser applicationUser= _unitOfWork.ApplicationUser.Get(x => x.Id == userId);
+            var applicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId);
 
+            // 2. Calculate total amount
             foreach (var cart in ShoppingCartVM.ShoppingCartList)
             {
                 cart.Price = GetPriceBasedonQuantity(cart);
-                ShoppingCartVM.OrderHeader.OrderTotal += cart.Price * (cart.Count);
+                ShoppingCartVM.OrderHeader.OrderTotal += cart.Price * cart.Count;
             }
-            #region OrderHeader
-            if (applicationUser.CompanyId.GetValueOrDefault() == 0)
-            {
-                //regular user , customer
-                ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
-                ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
 
-            }
-            else
-            {
-                //compnay(No need to redirectc to paymentGateway) thet why status is amrked as this
-                ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusDelayedPayment;
-                ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
+            if (ShoppingCartVM.OrderHeader.OrderTotal <= 0)
+                throw new Exception("Invalid order total: " + ShoppingCartVM.OrderHeader.OrderTotal);
 
-            }
-            _unitOfWork.OrderHeader.Add(ShoppingCartVM.OrderHeader);
-            _unitOfWork.Save();
-            #endregion
-            #region OrderDetails
-            foreach (var item in ShoppingCartVM.ShoppingCartList)
+            using (var transaction = _unitOfWork.BeginTransaction())
             {
-                OrderDetail orderDetail = new()
+                try
                 {
-                    ProductId = item.ProductId,
-                    OrderHeaderId = ShoppingCartVM.OrderHeader.Id,
-                    Price = item.Price,
-                    Count = item.Count,
-                    product=item.Product
+                    #region OrderHeader
+                    // 3. Set order header status
+                    if (applicationUser.CompanyId.GetValueOrDefault() == 0)
+                    {
+                        ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
+                        ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
+                    }
+                    else
+                    {
+                        ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusDelayedPayment;
+                        ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
+                    }
+
+                    // 4. Save OrderHeader
+                    _unitOfWork.OrderHeader.Add(ShoppingCartVM.OrderHeader);
+                    _unitOfWork.Save();
+                    #endregion OrderHeader >>
+
+                    #region OrderDetails
+                    // 5. Save Order Details (NO SAVE INSIDE LOOP)
+                    foreach (var item in ShoppingCartVM.ShoppingCartList)
+                    {
+                        OrderDetail detail = new()
+                        {
+                            ProductId = item.ProductId,
+                            OrderHeaderId = ShoppingCartVM.OrderHeader.Id,
+                            Price = item.Price,
+                            Count = item.Count
+                        };
+                        _unitOfWork.OrderDetail.Add(detail);
+                    }
+                    _unitOfWork.Save();
+                    #endregion OrderDetails >>
+
+                    #region Razorpay
+                    // 6. If regular user, create Razorpay Order
+                    if (applicationUser.CompanyId.GetValueOrDefault() == 0)
+                    {
+                         
+                        var razorSettings = _configuration.GetSection("Razorpay").Get<RazorpaySettings>();
+                        RazorpayClient client = new RazorpayClient(razorSettings.Key, razorSettings.Secret);
+
+                        Dictionary<string, object> options = new()
+                {
+                    { "amount", (int)(ShoppingCartVM.OrderHeader.OrderTotal * 100) },
+                    { "currency", "INR" },
+                    { "receipt", $"receipt_{ShoppingCartVM.OrderHeader.Id}" }
                 };
-                _unitOfWork.OrderDetail.Add(orderDetail);
-                _unitOfWork.Save();
-            }
-            if (applicationUser.CompanyId.GetValueOrDefault() == 0)
-            { 
 
-            }
-           // else { }
+                        Razorpay.Api.Order razorOrder = client.Order.Create(options);
 
-                #endregion
-                return RedirectToAction(nameof(OrderConfirmation), new { id = ShoppingCartVM.OrderHeader.Id });
+                        // Save Razorpay Order ID
+                        // Using PaymentIntentId column to store Razorpay OrderId (rename later)
+                        ShoppingCartVM.OrderHeader.PaymentIntentId = razorOrder["id"].ToString();
+                        _unitOfWork.Save();
+
+                        transaction.Commit();
+
+                        return RedirectToAction("Payment", new { id = ShoppingCartVM.OrderHeader.Id });
+                    }
+
+                    #endregion  Razorpay >>
+                    // 7. Company user → No payment
+                    transaction.Commit();
+                    return RedirectToAction(nameof(OrderConfirmation), new { id = ShoppingCartVM.OrderHeader.Id });
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
         }
+
 
         public IActionResult OrderConfirmation(int id)
         {
