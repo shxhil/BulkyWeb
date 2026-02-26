@@ -169,7 +169,14 @@ namespace BulkyWeb.Areas.Customer.Controllers
 
                         transaction.Commit();
 
-                        return RedirectToAction("Payment", new { id = ShoppingCartVM.OrderHeader.Id });
+                        return Json(new
+                        {
+                            Success = true,
+                            orderHeaderId = ShoppingCartVM.OrderHeader.Id,
+                            razorpayOrderId = ShoppingCartVM.OrderHeader.PaymentIntentId,
+                            amount = ShoppingCartVM.OrderHeader.OrderTotal * 100,
+                            key = razorSettings.Key
+                        });
                     }
 
                     #endregion  Razorpay >>
@@ -185,15 +192,7 @@ namespace BulkyWeb.Areas.Customer.Controllers
             }
         }
 
-        public IActionResult Payment(int id)
-        {
-            var orderHeader = _unitOfWork.OrderHeader.Get(x => x.Id == id,
-                includeProperty: "ApplicationUser");
-
-            if (orderHeader == null)
-                return RedirectToAction(nameof(Index));
-            return View(orderHeader);
-        }
+       
 
         [HttpPost]
         public IActionResult PaymentVerification(

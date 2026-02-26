@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Bulky.DataAccess.Repository.IRepostory
 {
-    public interface IOrderHeaderRepository: IRepository<OrderHeader>
+    public interface IOrderHeaderRepository : IRepository<OrderHeader>
     {
         void Update(OrderHeader obj);
         void Save();
