@@ -214,7 +214,7 @@ namespace BulkyWeb.Areas.Customer.Controllers
 
                 Utils.verifyPaymentSignature(attributes);
 
-                var orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == orderHeaderId);
+                var orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == orderHeaderId, istacking:true);
                 orderHeader.PaymentStatus = SD.PaymentStatusApproved;
                 orderHeader.OrderStatus = SD.StatusApproved;
                 _unitOfWork.Save();

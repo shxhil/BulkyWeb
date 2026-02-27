@@ -1,4 +1,32 @@
-﻿
+﻿@{
+    var status = Context.Request.Query["status"];
+
+    var inprocess = "text-primary";
+    var Pending = "text-primary";
+    var Completed = "text-primary";
+    var approved = "text-primary";
+    var all = "text-primary";
+
+    switch (status)
+    {
+        case "inprocess":
+            inprocess = "active text-white bg-primary";
+            break;
+        case "Pending":
+            Pending = "active text-white bg-primary";
+            break;
+        case "Completed":
+            Completed = "active text-white bg-primary";
+            break;
+        case "approved":
+            approved = "active text-white bg-primary";
+            break;
+        default:
+            all = "active text-white bg-primary";
+            break;
+
+    }
+}
 
 
 <div class="container">
@@ -14,19 +42,19 @@
             <span></span>
             <ul class="list-group list-group-horizontal-sm">
                 <a style="text-decoration:none;" asp-controller="Order" asp-action="Index" asp-route-status="inprocess">
-                    <li class="list-group-item">In Process</li>
+                <li class="list-group-item @inprocess">In Process</li>
                 </a>
-                <a style="text-decoration:none;" asp-controller="Order" asp-action="Index" asp-route-status="inprocess">
-                <li class="list-group-item">Payment Pending</li>
+                <a style="text-decoration:none;" asp-controller="Order" asp-action="Index" asp-route-status="Pending">
+                <li class="list-group-item @Pending">Payment Pending</li>
                 </a>
                 <a style="text-decoration:none;" asp-controller="Order" asp-action="Index" asp-route-status="Completed">
-                <li class="list-group-item">Completed</li>
+                <li class="list-group-item @Completed">Completed</li>
                 </a>
                 <a style="text-decoration:none;" asp-controller="Order" asp-action="Index" asp-route-status="approved">
-                <li class="list-group-item">Approved</li>
+                <li class="list-group-item @approved">Approved</li>
                 </a>
                 <a style="text-decoration:none;" asp-controller="Order" asp-action="Index" asp-route-status="all">
-                <li class="list-group-item">All</li>
+                <li class="list-group-item @all">All</li>
                 </a>
             </ul>
 

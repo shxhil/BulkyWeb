@@ -3,34 +3,51 @@ console.log("order.js loaded!!!");
 
 var dataTable;
 $(document).ready(function () {
-    loadTableData();
+    var url = window.location.search;
+    if (url.includes("inprocess")) {
+        loadTableData("inprocess");
+    }
+    else if (url.includes("Completed")) {
+        loadTableData("Completed");
+    }
+    else if (url.includes("Pending")) {
+        loadTableData("Pending");
+    }
+    else if (url.includes("approved")) {
+        loadTableData("approved");
+    }
+    else {
+        loadTableData("all");
+    }
 });
 
-function loadTableData() {
-    dataTable = $('#tblData').DataTable({
-        "ajax": {
-            "url": "/Admin/Order/GetAll",
-            "dataSrc": "data"
+function loadTableData(status) {
+    if ($.fn.DataTable.isDataTable("#tblData")) {
+        $('#tblData').DataTable().destroy();
+    }
+
+    $("#tblData").DataTable({
+        ajax: {
+            url: "/Admin/Order/GetAll?status=" + status,
+            dataSrc: "data"
         },
-        "columns": [
-            { data: "id", width: "15%" },                // ID
-            { data: "name", width: "15%" },              // Name
-            { data: "phoneNumber", width: "15%" },       // Phone Number
-            { data: "applicationUser.email", width: "20%" }, // Email (nested property)
-            { data: "orderStatus", width: "15%" },       // Status
-            { data: "orderTotal", width: "10%" },        // Total
+        columns: [
+            { data: "id" },
+            { data: "name" },
+            { data: "phoneNumber" },
+            { data: "applicationUser.email" },
+            { data: "orderStatus" },
+            { data: "orderTotal" },
             {
                 data: "id",
                 render: function (data) {
                     return `
-                    <a href="/Admin/Order/Upsert?id=${data}" 
-                       class="btn btn-primary btn-sm">
-                       <i class="bi bi-pencil-square"></i> Edit
-                    </a>`;
-                },
-                width: "15%"
+                        <a href="/Admin/Order/Details?id=${data}" class="btn btn-primary btn-sm">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>`;
+                }
             }
         ]
     });
-} 
+}
 
