@@ -18,7 +18,7 @@ namespace Bulky.Models
         public ApplicationUser ApplicationUser { get; set; }
 
         public DateTime OrderDate { get; set; }
-        public DateTime ShipmentDate { get; set; }
+        public DateTime? ShipmentDate { get; set; }
         public double OrderTotal { get; set; }
 
         public string? OrderStatus { get; set; }
@@ -27,13 +27,16 @@ namespace Bulky.Models
         public string? TrackingNumber { get; set; }
         public string? Carrier { get; set; }
 
-        public DateTime PaymentDate { get; set; }
-        public DateOnly PaymentDueDate { get; set; }
+        public DateTime? PaymentDate { get; set; }
+        public DateOnly? PaymentDueDate { get; set; }
 
         public string? PaymentIntentId { get; set; }
+        public string? RazorpayOrderId { get; set; }     
+        public string? RefundId { get; set; }
 
-        [Required]
-        public string? PhoneNumber { get; set; }
+        [Required(ErrorMessage ="Phone number is required")]
+        [RegularExpression(@"^[6-9]\d{9}$",ErrorMessage ="Enter a valid 10-digit Indian mobile number")]
+        public string PhoneNumber { get; set; }
         [Required]
         public string? StreetAddress { get; set; }
         [Required]

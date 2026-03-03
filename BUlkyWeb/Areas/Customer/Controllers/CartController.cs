@@ -82,7 +82,7 @@ namespace BulkyWeb.Areas.Customer.Controllers
         [HttpPost]
         [ActionName("Summary")]
         public IActionResult SummaryPOST()
-        
+
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -124,6 +124,7 @@ namespace BulkyWeb.Areas.Customer.Controllers
                         ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
                     }
 
+                    ShoppingCartVM.OrderHeader.PaymentDate = DateTime.Now;
                     // 4. Save OrderHeader
                     _unitOfWork.OrderHeader.Add(ShoppingCartVM.OrderHeader);
                     _unitOfWork.Save();
@@ -192,7 +193,7 @@ namespace BulkyWeb.Areas.Customer.Controllers
             }
         }
 
-       
+
 
         [HttpPost]
         public IActionResult PaymentVerification(
@@ -214,7 +215,11 @@ namespace BulkyWeb.Areas.Customer.Controllers
 
                 Utils.verifyPaymentSignature(attributes);
 
-                var orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == orderHeaderId, istacking:true);
+                var orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == orderHeaderId, istacking: true);
+
+                orderHeader.PaymentIntentId = razorpay_payment_id;
+                orderHeader.RazorpayOrderId = razorpay_order_id;
+
                 orderHeader.PaymentStatus = SD.PaymentStatusApproved;
                 orderHeader.OrderStatus = SD.StatusApproved;
                 _unitOfWork.Save();
@@ -261,6 +266,10 @@ namespace BulkyWeb.Areas.Customer.Controllers
             {
                 //remove from the cart
                 _unitOfWork.ShoppingCart.Remove(cartFromDB);
+                HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart
+                    .GetAll(x => x.ApplicationUserId == cartFromDB.ApplicationUserId).Count() - 1);
+                _unitOfWork.Save();
+
             }
             else
             {
@@ -275,6 +284,10 @@ namespace BulkyWeb.Areas.Customer.Controllers
         {
             var cartFromDB = _unitOfWork.ShoppingCart.Get(x => x.Id == CartId);
             _unitOfWork.ShoppingCart.Remove(cartFromDB);
+
+            HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart
+                .GetAll(x => x.ApplicationUserId == cartFromDB.ApplicationUserId).Count() - 1);
+
             _unitOfWork.Save();
             return RedirectToAction(nameof(Index));
         }

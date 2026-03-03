@@ -1,7 +1,9 @@
 using Bulky.DataAccess;
 using Bulky.DataAccess.Repository.IRepostory;
 using Bulky.Models;
+using Bulky.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -22,6 +24,14 @@ namespace BulkyWeb.Areas.Customer.Controllers
         //IActionResult , custom class or object includes all possible retun types in .net
         public IActionResult Index()
         {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (claim != null)
+            {
+                HttpContext.Session.SetInt32(SD.SessionCart,
+                                     _unitOfWork.ShoppingCart.GetAll(x => x.ApplicationUserId == claim.Value).Count());
+            }
             IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperty: "Category");
             return View(productList);
         }
@@ -55,13 +65,17 @@ namespace BulkyWeb.Areas.Customer.Controllers
             {
                 cartFrmDB.Count += shoppingCart.Count;
                 _unitOfWork.ShoppingCart.Update(cartFrmDB);
+                _unitOfWork.Save();
+
             }
             else
             {
                 _unitOfWork.ShoppingCart.Add(shoppingCart);
+                _unitOfWork.Save();
+                HttpContext.Session.SetInt32(SD.SessionCart,
+                     _unitOfWork.ShoppingCart.GetAll(x => x.ApplicationUserId == userId).Count());
             }
 
-            _unitOfWork.Save();
             return RedirectToAction(nameof(Index));
         }
 

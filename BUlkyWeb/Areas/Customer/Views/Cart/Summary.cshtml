@@ -41,7 +41,7 @@
                                     <label>Phone</label>
                                 </div>
                                 <div class="col-9">
-                                    <input asp-for=OrderHeader.PhoneNumber" class="form-control" />
+                                    <input asp-for="OrderHeader.PhoneNumber" id="PhoneNo" class="form-control" />
                                     <span asp-validation-for="OrderHeader.PhoneNumber" class="text-danger"></span>
                                 </div>
                             </div>
@@ -118,7 +118,7 @@
                         </p>
                     </div>
                     <div class="col-12 col-md-4">
-                        <button type="submit" value="Place Order" class="btn btn-primary form-control">Place Order</button>
+                        <button type="submit" value="Place Order" onclick="return validateInput()" class="btn btn-primary form-control">Place Order</button>
                     </div>
                 </div>
             </div>
@@ -133,7 +133,7 @@
         e.preventDefault();
 
         $.ajax({
-            url: '@Url.Action("Summary", "Cart")', 
+            url: '@Url.Action("Summary", "Cart")',
             type: 'POST',
             data: $(this).serialize(),
             success: function (res) {
@@ -164,4 +164,27 @@
             }
         });
     });
+
+    function validateInput(){
+          let phone=document.getElementById("PhoneNo").value.trim();
+          if (phone === "") {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please enter your phone number',
+        });
+        return false;
+          }
+
+          let phoneRegex=/^[6-9]\d{9}$/;
+          if(!phoneRegex.test(phone)){
+               Swal.fire({
+            icon: 'error',
+            title: 'Invalid Number',
+            text: 'Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9',
+        });
+        return false;
+          }
+          return true
+    }
 </script>
