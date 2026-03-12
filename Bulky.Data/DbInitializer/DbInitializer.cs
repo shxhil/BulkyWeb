@@ -49,7 +49,7 @@ namespace Bulky.DataAccess.DbInitializer
                 _userManager.CreateAsync(new ApplicationUser
                 {
                     UserName = "shahil@gmail.com",
-                    Email = "admin@gmail.com",
+                    Email = "shahil@gmail.com",
                     Name = "admin shahil",
                     PhoneNumber = "7034721543",
                     StreetAddress = "test",
